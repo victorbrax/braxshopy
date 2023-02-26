@@ -12,3 +12,8 @@ class RegistrationForm(Form):
                            message='Senha e Confirmação estão diferentes!')
     ])
     confirm = PasswordField('Senha')
+
+
+class LoginForm(Form):
+    email = StringField('Email', [validators.Length(min=6, max=35)])
+    password = PasswordField('Senha', [validators.DataRequired()])
