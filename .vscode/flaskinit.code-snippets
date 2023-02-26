@@ -1,0 +1,18 @@
+{
+	// Iniciar projeto Flask simples de forma rápida.
+	// Obs: O $1 é a posição final do cursor do mouse.
+	"Init my Flask": {
+		"scope": "python",
+		"prefix": "initflask",
+		"body": [
+			"from flask import Flask\n",
+			"app = Flask(__name__)\n\n",
+			"@app.route(\"/\")",
+			"def index():",
+			"\tpass\n",
+			"if __name__ == \"__main__\":",
+			"\tapp.run()$1"
+		],
+		"description": "Snippet para iniciar um projeto Flask simples rapidamente."
+	}
+}
