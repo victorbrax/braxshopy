@@ -12,7 +12,7 @@ db.init_app(app)
 bcrypt = Bcrypt(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/products/images')
+app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch_request_class(app)

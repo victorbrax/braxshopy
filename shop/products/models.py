@@ -24,8 +24,6 @@ class Produtos(db.Model):
     def __repr__(self):
         return '<Addproduto %r>' % self.name
 
-
-
 class Marcas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False, unique=True)

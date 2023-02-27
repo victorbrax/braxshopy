@@ -11,9 +11,8 @@ def admin():
     if 'email' not in session:
         flash(f'Por favor, faça o login antes.', 'success')
         return redirect(url_for('login'))
-    
     produtos = Produtos.query.all()
-    return render_template("admin/index.html", title='Página Administrativa')
+    return render_template("admin/index.html", produtos=produtos, title='Página Administrativa')
 
 
 @app.route('/registro', methods=['GET', 'POST'])
