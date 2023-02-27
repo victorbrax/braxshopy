@@ -18,8 +18,41 @@ def addmarca():
         db.session.commit()
         flash(f"A marca {getmarca} foi cadastrada com sucesso", "success")
 
-        return redirect(url_for('addmarca'))
-    return render_template('/products/additems.html', escopo='marcas', title="Cadastrar Marcas")
+@app.route('/updatemarca/<int:id>', methods=['GET', 'POST'])
+def updatemarca(id):
+    if 'email' not in session:
+        flash(f'Por favor, faça o login antes.', 'success')
+        return redirect(url_for('login'))
+    
+    old_marca = Marcas.query.get_or_404(id)
+    marca = request.form.get('marca')
+    
+    if request.method=='POST':
+        old_marca.name = marca
+        db.session.commit()
+
+        flash(f"A marca {marca} foi atualizada com sucesso", "success")
+        return redirect(url_for('marcas'))
+
+    return render_template('/products/updateclassificacao.html', content=old_marca, escopo='updatemarca', title="Atualizar Marcas")
+
+@app.route('/updatecategoria/<int:id>', methods=['GET', 'POST'])
+def updatecategoria(id):
+    if 'email' not in session:
+        flash(f'Por favor, faça o login antes.', 'success')
+        return redirect(url_for('login'))
+    
+    old_categoria = Categorias.query.get_or_404(id)
+    categoria = request.form.get('categoria')
+    
+    if request.method=='POST':
+        old_categoria.name = categoria
+        db.session.commit()
+
+        flash(f"A categoria {categoria} foi atualizada com sucesso", "success")
+        return redirect(url_for('categorias'))
+
+    return render_template('/products/updateclassificacao.html', content=old_categoria, escopo='updatecategoria', title="Atualizar Categorias")
 
 @app.route('/addcategoria', methods=['GET', 'POST'])
 def addcategoria():
