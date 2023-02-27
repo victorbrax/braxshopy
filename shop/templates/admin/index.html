@@ -1,7 +1,6 @@
 {% extends 'layouts.html' %}
 
 {% block content %}
-{% include '_messages.html' %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">Administrador</a>
@@ -38,6 +37,7 @@
     </form>
   </div>
 </nav>
+{% include '_messages.html' %}
 
 <div class="container mt-3">
   <table class="table table-sm table-striped">
@@ -45,8 +45,8 @@
       <th>Serial</th>
       <th>Produto</th>
       <th>Preco</th>
-      <th>Fabricante</th>
       <th>Desconto</th>
+      <th>Fabricante</th>
       <th>Foto</th>
       <th>Editar</th>
       <th>Deletar</th>
@@ -58,7 +58,7 @@
         <td>{{produto.name}}</td>
         <td>{{produto.price}}</td>
         <td>{{produto.discount}} %</td>
-        <td>{{produto.marca}}</td>
+        <td>{{produto.marca.name}}</td>
         <td><img src="{{url_for('static', filename='images/' + produto.img1)}}" width="80" height="80"></td>
         <td>Editar</td>
         <td>Deletar</td>

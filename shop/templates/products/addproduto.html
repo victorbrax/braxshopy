@@ -17,7 +17,7 @@
       <select name="marca" id="marca" class="form-control" required>
         <option value="">Selecione uma marca</option>
         {% for marca in marcas %}
-        <option value="marca.id">{{marca.name}}</option>
+        <option value="{{marca.id}}">{{marca.name}}</option>
         {% endfor %}
       </select>
 
@@ -25,7 +25,7 @@
       <select name="categoria" id="categoria" class="form-control" required>
         <option value="">Selecione uma categoria</option>
         {% for categoria in categorias %}
-        <option value="categoria.id">{{categoria.name}}</option>
+        <option value="{{categoria.id}}">{{categoria.name}}</option>
         {% endfor %}
       </select>
       
