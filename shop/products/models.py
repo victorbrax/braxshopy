@@ -1,7 +1,7 @@
 from shop import app, db, photos
 from datetime import datetime
 
-class Addproduto(db.Model):
+class Produtos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Numeric(10,2), nullable=False)

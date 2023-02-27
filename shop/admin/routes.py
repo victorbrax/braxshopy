@@ -1,5 +1,6 @@
 from flask import render_template, session, request, url_for, flash, redirect
 from shop import app, db, bcrypt
+from shop.products.models import Produtos
 from .forms import RegistrationForm, LoginForm
 from .models import User
 import os
@@ -8,9 +9,10 @@ import os
 @app.route('/admin')
 def admin():
     if 'email' not in session:
-        flash(f'Por favor, faça o login antes.', 'error')
+        flash(f'Por favor, faça o login antes.', 'success')
         return redirect(url_for('login'))
-
+    
+    produtos = Produtos.query.all()
     return render_template("admin/index.html", title='Página Administrativa')
 
 

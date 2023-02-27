@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for, flash, request
 from shop import db, app, photos
-from .models import Marcas, Categorias
+from .models import Marcas, Categorias, Produtos
 from .forms import AddProdutos
+import secrets
 
 
 @app.route('/addmarca', methods=['GET', 'POST'])
@@ -37,8 +38,24 @@ def addproduto():
     form = AddProdutos(request.form)
 
     if request.method == "POST":
-        photos.save(request.files.get('img1'))
-        photos.save(request.files.get('img2'))
-        photos.save(request.files.get('img3'))
+
+        name = form.name.data
+        price= form.price.data
+        discount = form.discount.data
+        stock = form.stock.data
+        colors = form.colors.data
+        description = form.description.data
+        marca = request.form.get('marca')
+        categoria = request.form.get('categoria')
+        img1 = photos.save(request.files.get('img1'), name=secrets.token_hex(10) + ".")
+        img2 = photos.save(request.files.get('img2'), name=secrets.token_hex(10) + ".")
+        img3 = photos.save(request.files.get('img3'), name=secrets.token_hex(10) + ".")
+        produto = Produtos(name=name, price=price, discount=discount, stock=stock, colors=colors, description=description, marca_id=marca, categoria_id=categoria, img1=img1, img2=img2, img3=img3)
+
+        db.session.add(produto)
+        db.session.commit()
+
+        flash(f"O produto {name} foi cadastrado com sucesso", "success")
+        return redirect(url_for('admin'))
 
     return render_template('/products/addproduto.html', form=form, title="Cadastrar Produtos", marcas=marcas, categorias=categorias)
