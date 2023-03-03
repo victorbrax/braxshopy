@@ -11,10 +11,10 @@ class Produtos(db.Model):
     description = db.Column(db.Text, nullable=False)
     pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     
-    marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'), nullable=False)
+    marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id', ondelete='CASCADE'), nullable=False)
     marca = db.relationship('Marcas', backref=db.backref('marcas', lazy=True))
     
-    categoria_id = db.Column(db.Integer, db.ForeignKey('categorias.id'), nullable=False)
+    categoria_id = db.Column(db.Integer, db.ForeignKey('categorias.id', ondelete='CASCADE'), nullable=False)
     categoria = db.relationship('Categorias', backref=db.backref('categorias', lazy=True))
 
     img1 = db.Column(db.String(150), nullable=False, default="image.jpeg")
