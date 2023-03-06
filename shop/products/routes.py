@@ -189,3 +189,17 @@ def updateproduto(id):
                            categorias=categorias, 
                            marcas=marcas, 
                            title="Atualizar Produtos")
+
+@app.route('/deleteproduto/<int:id>', methods=['POST'])
+def deleteproduto(id):
+    conferir_login()
+    
+    produto = Produtos.query.get_or_404(id)
+    if request.method=='POST':
+        db.session.delete(produto)
+        db.session.commit()
+
+        flash(f"O produto foi deletado com sucesso", "success")
+        return redirect(url_for('admin'))
+    flash(f"O produto {produto.name} não foi deletado", "warning")
+    return redirect(url_for('admin'))
