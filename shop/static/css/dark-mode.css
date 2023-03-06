@@ -1,7 +1,11 @@
 body {
-  color: #1a1a1a;
+  color: #ffffff;
   background-color: #222;
 }
+
+/* p, h1, h2, h3, h4, h5, span{
+  color: #ffffff
+} */
 
 a {
   color: #ff0;

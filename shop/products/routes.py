@@ -114,6 +114,21 @@ def updatecategoria(id):
 
     return render_template('/products/updateclassificacao.html', content=old_categoria, escopo='updatecategoria', title="Atualizar Categorias")
 
+@app.route('/deletecategoria/<int:id>', methods=['POST'])
+def deletecategoria(id):
+    conferir_login()
+    
+    categoria = Categorias.query.get_or_404(id)
+    if request.method=='POST':
+        Produtos.query.filter_by(categoria_id=categoria.id).delete()
+        db.session.delete(categoria)
+        db.session.commit()
+
+        flash(f"A categoria foi deletada com sucesso", "success")
+        return redirect(url_for('admin'))
+    flash(f"A categoria {categoria.name} não foi deletada", "warning")
+    return redirect(url_for('admin'))
+
 
 # Estudar mais depois
 @app.route('/updateproduto/<int:id>', methods=['GET', 'POST'])
