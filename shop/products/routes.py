@@ -9,7 +9,11 @@ def conferir_login():
         flash(f'Por favor, faça o login antes.', 'success')
         return redirect(url_for('login'))
     
+@app.route('/')
+def home():
+    produtos = Produtos.query.filter(Produtos.stock > 0)
 
+    return render_template('products/index.html', produtos=produtos)
 
 @app.route('/addmarca', methods=['GET', 'POST'])
 def addmarca():
@@ -195,7 +199,16 @@ def deleteproduto(id):
     conferir_login()
     
     produto = Produtos.query.get_or_404(id)
+
     if request.method=='POST':
+
+        try:
+            os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img1))
+            os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img2))
+            os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img3))
+        except Exception as e:
+            print(e)
+
         db.session.delete(produto)
         db.session.commit()
 
