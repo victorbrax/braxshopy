@@ -12,8 +12,16 @@ def conferir_login():
 @app.route('/')
 def home():
     produtos = Produtos.query.filter(Produtos.stock > 0)
+    marcas = Marcas.query.all()
 
-    return render_template('products/index.html', produtos=produtos)
+    return render_template('products/index.html', produtos=produtos, marcas=marcas)
+
+
+@app.route('/marca/<int:id>')
+def get_marca(id):
+    marca = Produtos.query.filter_by(marca_id=id)
+    return render_template('/products/index.html', marca=marca, title="Add title dps")
+
 
 @app.route('/addmarca', methods=['GET', 'POST'])
 def addmarca():

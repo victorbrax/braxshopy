@@ -3,18 +3,49 @@
 {% block content %}
 <div class="container">
   <div class="row">
-    <!-- {% for produto in produtos %} -->
+    {% if marca %}
+    {% for m in marca %}
     <div class="col-md-3">
       <div class="card">
-        <img src="" alt="">
-        <div class="card-body"></div>
+        <img src="{{url_for('static', filename='images/' + m.img1)}}" class="card-img-top" height="150" alt="">
+        <div class="card-body">
+          {% if m.discount > 0 %}
+          <p
+            style="text-shadow: 1px 2px 2px #000; color: #f00; transform: rotate(-10deg); position: absolute; top: 70%; right: 65%; font-weight: 600;">
+            Desconto: {{m.discount}}%</p>
+          {% endif %}
+          <h4 class="text-center">{{m.name}}</h4>
+          <p class="text-center">Preço R$: {{m.price}}</p>
+        </div>
         <div class="card-footer">
           <a href="#" class="float-left btn btn-sm btn-primary mt-2">Detalhes</a>
-          <a href="#" class="float-right btn btn-sm btn-warning mt-2">Adicionar ao Carrinho</a>
+          <a href="#" class="float-right btn btn-sm btn-warning mt-2">Comprar</a>
         </div>
       </div>
     </div>
-    <!-- {% endfor %} -->
+    {% endfor %}
+    {% else %}
+    {% for produto in produtos %}
+    <div class="col-md-3">
+      <div class="card">
+        <img src="{{url_for('static', filename='images/' + produto.img1)}}" class="card-img-top" height="150" alt="">
+        <div class="card-body">
+          {% if produto.discount > 0 %}
+          <p
+            style="text-shadow: 1px 2px 2px #000; color: #f00; transform: rotate(-10deg); position: absolute; top: 70%; right: 65%; font-weight: 600;">
+            Desconto: {{produto.discount}}%</p>
+            {% endif %}
+            <h4 class="text-center">{{produto.name}}</h4>
+            <p class="text-center">Preço R$: {{produto.price}}</p>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="float-left btn btn-sm btn-primary mt-2">Detalhes</a>
+            <a href="#" class="float-right btn btn-sm btn-warning mt-2">Comprar</a>
+          </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
   </div>
 </div>
 {% endblock content %}
