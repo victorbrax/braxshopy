@@ -35,6 +35,17 @@
               {% endfor %}
             </div>
           </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Categorias
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for categoria in categorias %}
+              <a class="dropdown-item" href="{{url_for('get_categoria', id=categoria.id)}}">{{categoria.name}}</a>
+              {% endfor %}
+            </div>
+          </li>
           <li class="nav-item">
           <li class="nav-item">
             <a class="nav-link" href="#">Sobre Nós</a>

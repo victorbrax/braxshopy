@@ -2,25 +2,35 @@ from flask import render_template, redirect, url_for, flash, request, session, c
 from shop import db, app, photos
 from .models import Marcas, Categorias, Produtos
 from .forms import AddProdutos
-import secrets, os
+import secrets
+import os
+
 
 def conferir_login():
     if 'email' not in session:
         flash(f'Por favor, faça o login antes.', 'success')
         return redirect(url_for('login'))
-    
+
+
 @app.route('/')
 def home():
     produtos = Produtos.query.filter(Produtos.stock > 0)
-    marcas = Marcas.query.all()
+    marcas = Marcas.query.join(
+        Produtos, (Marcas.id == Produtos.marca_id)).all()
+    categorias = Categorias.query.join(
+        Produtos, (Categorias.id == Produtos.categoria_id)).all()
 
-    return render_template('products/index.html', produtos=produtos, marcas=marcas)
+    return render_template('products/index.html', produtos=produtos, marcas=marcas, categorias=categorias)
 
 
 @app.route('/marca/<int:id>')
 def get_marca(id):
     marca = Produtos.query.filter_by(marca_id=id)
-    return render_template('/products/index.html', marca=marca, title="Add title dps")
+    categorias = Categorias.query.join(
+        Produtos, (Categorias.id == Produtos.categoria_id)).all()
+    marcas = Marcas.query.join(
+        Produtos, (Marcas.id == Produtos.marca_id)).all()
+    return render_template('/products/index.html', marca=marca, marcas=marcas, categorias=categorias, title="Add title dps")
 
 
 @app.route('/addmarca', methods=['GET', 'POST'])
@@ -43,10 +53,26 @@ def addcategoria():
         categoria = Categorias(name=getcategoria)
         db.session.add(categoria)
         db.session.commit()
-        flash(f"A categoria {getcategoria} foi cadastrada com sucesso", "success")
+        flash(
+            f"A categoria {getcategoria} foi cadastrada com sucesso", "success")
 
         return redirect(url_for('addcategoria'))
     return render_template('/products/additems.html', escopo='categorias', title="Cadastrar Categorias")
+
+
+@app.route('/categoria/<int:id>')
+def get_categoria(id):
+    categoria = Produtos.query.filter_by(categoria_id=id)
+    categorias = Categorias.query.join(
+        Produtos, (Categorias.id == Produtos.categoria_id)).all()
+    marcas = Marcas.query.join(
+        Produtos, (Marcas.id == Produtos.marca_id)).all()
+    return render_template('/products/index.html',
+                           categoria=categoria,
+                           categorias=categorias,
+                           marcas=marcas,
+                           title="Add title dps")
+
 
 @app.route('/addproduto', methods=['GET', 'POST'])
 def addproduto():
@@ -58,20 +84,23 @@ def addproduto():
     if request.method == "POST":
 
         name = form.name.data
-        price= form.price.data
+        price = form.price.data
         discount = form.discount.data
         stock = form.stock.data
         colors = form.colors.data
         description = form.description.data
         marca = request.form.get('marca')
         categoria = request.form.get('categoria')
-       
-        img1 = photos.save(request.files.get('img1'), name=secrets.token_hex(10) + ".")
-        img2 = photos.save(request.files.get('img2'), name=secrets.token_hex(10) + ".")
-        img3 = photos.save(request.files.get('img3'), name=secrets.token_hex(10) + ".")
-       
-       
-        produto = Produtos(name=name, price=price, discount=discount, stock=stock, colors=colors, description=description, marca_id=marca, categoria_id=categoria, img1=img1, img2=img2, img3=img3)
+
+        img1 = photos.save(request.files.get('img1'),
+                           name=secrets.token_hex(10) + ".")
+        img2 = photos.save(request.files.get('img2'),
+                           name=secrets.token_hex(10) + ".")
+        img3 = photos.save(request.files.get('img3'),
+                           name=secrets.token_hex(10) + ".")
+
+        produto = Produtos(name=name, price=price, discount=discount, stock=stock, colors=colors,
+                           description=description, marca_id=marca, categoria_id=categoria, img1=img1, img2=img2, img3=img3)
 
         db.session.add(produto)
         db.session.commit()
@@ -81,13 +110,14 @@ def addproduto():
 
     return render_template('/products/addproduto.html', form=form, title="Cadastrar Produtos", marcas=marcas, categorias=categorias)
 
+
 @app.route('/updatemarca/<int:id>', methods=['GET', 'POST'])
 def updatemarca(id):
     conferir_login()
     old_marca = Marcas.query.get_or_404(id)
     marca = request.form.get('marca')
-    
-    if request.method=='POST':
+
+    if request.method == 'POST':
         old_marca.name = marca
         db.session.commit()
 
@@ -96,12 +126,13 @@ def updatemarca(id):
 
     return render_template('/products/updateclassificacao.html', content=old_marca, escopo='updatemarca', title="Atualizar Marcas")
 
+
 @app.route('/deletemarca/<int:id>', methods=['POST'])
 def deletemarca(id):
     conferir_login()
-    
+
     marca = Marcas.query.get_or_404(id)
-    if request.method=='POST':
+    if request.method == 'POST':
         Produtos.query.filter_by(marca_id=marca.id).delete()
         db.session.delete(marca)
         db.session.commit()
@@ -111,13 +142,14 @@ def deletemarca(id):
     flash(f"A marca {marca.name} não foi deletada", "warning")
     return redirect(url_for('admin'))
 
+
 @app.route('/updatecategoria/<int:id>', methods=['GET', 'POST'])
 def updatecategoria(id):
     conferir_login()
     old_categoria = Categorias.query.get_or_404(id)
     categoria = request.form.get('categoria')
-    
-    if request.method=='POST':
+
+    if request.method == 'POST':
         old_categoria.name = categoria
         db.session.commit()
 
@@ -126,12 +158,13 @@ def updatecategoria(id):
 
     return render_template('/products/updateclassificacao.html', content=old_categoria, escopo='updatecategoria', title="Atualizar Categorias")
 
+
 @app.route('/deletecategoria/<int:id>', methods=['POST'])
 def deletecategoria(id):
     conferir_login()
-    
+
     categoria = Categorias.query.get_or_404(id)
-    if request.method=='POST':
+    if request.method == 'POST':
         Produtos.query.filter_by(categoria_id=categoria.id).delete()
         db.session.delete(categoria)
         db.session.commit()
@@ -167,25 +200,35 @@ def updateproduto(id):
 
         if request.files.get('img1'):
             try:
-                os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img1))
-                produto.img1 = photos.save(request.files.get('img1'), name=secrets.token_hex(10) + ".")
+                os.unlink(os.path.join(current_app.root_path,
+                          "static/images/" + produto.img1))
+                produto.img1 = photos.save(request.files.get(
+                    'img1'), name=secrets.token_hex(10) + ".")
             except:
-                produto.img1 = photos.save(request.files.get('img1'), name=secrets.token_hex(10) + ".")
+                produto.img1 = photos.save(request.files.get(
+                    'img1'), name=secrets.token_hex(10) + ".")
         if request.files.get('img2'):
             try:
-                os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img2))
-                produto.img2 = photos.save(request.files.get('img2'), name=secrets.token_hex(10) + ".")
+                os.unlink(os.path.join(current_app.root_path,
+                          "static/images/" + produto.img2))
+                produto.img2 = photos.save(request.files.get(
+                    'img2'), name=secrets.token_hex(10) + ".")
             except:
-                produto.img2 = photos.save(request.files.get('img2'), name=secrets.token_hex(10) + ".")
+                produto.img2 = photos.save(request.files.get(
+                    'img2'), name=secrets.token_hex(10) + ".")
         if request.files.get('img3'):
             try:
-                os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img3))
-                produto.img3 = photos.save(request.files.get('img3'), name=secrets.token_hex(10) + ".")
+                os.unlink(os.path.join(current_app.root_path,
+                          "static/images/" + produto.img3))
+                produto.img3 = photos.save(request.files.get(
+                    'img3'), name=secrets.token_hex(10) + ".")
             except:
-                produto.img3 = photos.save(request.files.get('img3'), name=secrets.token_hex(10) + ".")
+                produto.img3 = photos.save(request.files.get(
+                    'img3'), name=secrets.token_hex(10) + ".")
 
         db.session.commit()
-        flash(f"O produto {produto.name} foi atualizado com sucesso", "success")
+        flash(
+            f"O produto {produto.name} foi atualizado com sucesso", "success")
         return redirect('/')
 
     form.name.data = produto.name
@@ -195,25 +238,29 @@ def updateproduto(id):
     form.discount.data = produto.discount
     form.description.data = produto.description
 
-    return render_template('/products/updateproduto.html', 
-                           form=form, 
-                           produto=produto, 
-                           categorias=categorias, 
-                           marcas=marcas, 
+    return render_template('/products/updateproduto.html',
+                           form=form,
+                           produto=produto,
+                           categorias=categorias,
+                           marcas=marcas,
                            title="Atualizar Produtos")
+
 
 @app.route('/deleteproduto/<int:id>', methods=['POST'])
 def deleteproduto(id):
     conferir_login()
-    
+
     produto = Produtos.query.get_or_404(id)
 
-    if request.method=='POST':
+    if request.method == 'POST':
 
         try:
-            os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img1))
-            os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img2))
-            os.unlink(os.path.join(current_app.root_path, "static/images/" + produto.img3))
+            os.unlink(os.path.join(current_app.root_path,
+                      "static/images/" + produto.img1))
+            os.unlink(os.path.join(current_app.root_path,
+                      "static/images/" + produto.img2))
+            os.unlink(os.path.join(current_app.root_path,
+                      "static/images/" + produto.img3))
         except Exception as e:
             print(e)
 

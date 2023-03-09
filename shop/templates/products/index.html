@@ -24,6 +24,30 @@
       </div>
     </div>
     {% endfor %}
+
+    {% elif categoria %}
+
+    {% for c in categoria %}
+    <div class="col-md-3">
+      <div class="card">
+        <img src="{{url_for('static', filename='images/' + c.img1)}}" class="card-img-top" height="150" alt="">
+        <div class="card-body">
+          {% if c.discount > 0 %}
+          <p
+            style="text-shadow: 1px 2px 2px #000; color: #f00; transform: rotate(-10deg); position: absolute; top: 70%; right: 65%; font-weight: 600;">
+            Desconto: {{c.discount}}%</p>
+          {% endif %}
+          <h4 class="text-center">{{c.name}}</h4>
+          <p class="text-center">Preço R$: {{c.price}}</p>
+        </div>
+        <div class="card-footer">
+          <a href="#" class="float-left btn btn-sm btn-primary mt-2">Detalhes</a>
+          <a href="#" class="float-right btn btn-sm btn-warning mt-2">Comprar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
     {% else %}
     {% for produto in produtos %}
     <div class="col-md-3">
@@ -34,14 +58,14 @@
           <p
             style="text-shadow: 1px 2px 2px #000; color: #f00; transform: rotate(-10deg); position: absolute; top: 70%; right: 65%; font-weight: 600;">
             Desconto: {{produto.discount}}%</p>
-            {% endif %}
-            <h4 class="text-center">{{produto.name}}</h4>
-            <p class="text-center">Preço R$: {{produto.price}}</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="float-left btn btn-sm btn-primary mt-2">Detalhes</a>
-            <a href="#" class="float-right btn btn-sm btn-warning mt-2">Comprar</a>
-          </div>
+          {% endif %}
+          <h4 class="text-center">{{produto.name}}</h4>
+          <p class="text-center">Preço R$: {{produto.price}}</p>
+        </div>
+        <div class="card-footer">
+          <a href="#" class="float-left btn btn-sm btn-primary mt-2">Detalhes</a>
+          <a href="#" class="float-right btn btn-sm btn-warning mt-2">Comprar</a>
+        </div>
       </div>
     </div>
     {% endfor %}
