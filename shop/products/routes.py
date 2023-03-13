@@ -14,23 +14,22 @@ def conferir_login():
 
 @app.route('/')
 def home():
-    produtos = Produtos.query.filter(Produtos.stock > 0)
-    marcas = Marcas.query.join(
-        Produtos, (Marcas.id == Produtos.marca_id)).all()
-    categorias = Categorias.query.join(
-        Produtos, (Categorias.id == Produtos.categoria_id)).all()
+    pagina = request.args.get('pagina', 1, type=int)
+    produtos = Produtos.query.filter(Produtos.stock > 0).paginate(page=pagina, per_page=1)
+    marcas = Marcas.query.join(Produtos, (Marcas.id == Produtos.marca_id)).all()
+    categorias = Categorias.query.join(Produtos, (Categorias.id == Produtos.categoria_id)).all()
 
     return render_template('products/index.html', produtos=produtos, marcas=marcas, categorias=categorias)
 
 
 @app.route('/marca/<int:id>')
 def get_marca(id):
-    marca = Produtos.query.filter_by(marca_id=id)
-    categorias = Categorias.query.join(
-        Produtos, (Categorias.id == Produtos.categoria_id)).all()
-    marcas = Marcas.query.join(
-        Produtos, (Marcas.id == Produtos.marca_id)).all()
-    return render_template('/products/index.html', marca=marca, marcas=marcas, categorias=categorias, title="Add title dps")
+    get_mar = Marcas.query.filter_by(id=id).first_or_404()
+    pagina = request.args.get('pagina', 1, type=int)
+    marca = Produtos.query.filter_by(marca=get_mar).paginate(page=pagina, per_page=1)
+    categorias = Categorias.query.join(Produtos, (Categorias.id == Produtos.categoria_id)).all()
+    marcas = Marcas.query.join(Produtos, (Marcas.id == Produtos.marca_id)).all()
+    return render_template('/products/index.html', marca=marca, marcas=marcas, categorias=categorias, get_mar=get_mar, title="Add title dps")
 
 
 @app.route('/addmarca', methods=['GET', 'POST'])
@@ -62,15 +61,16 @@ def addcategoria():
 
 @app.route('/categoria/<int:id>')
 def get_categoria(id):
-    categoria = Produtos.query.filter_by(categoria_id=id)
-    categorias = Categorias.query.join(
-        Produtos, (Categorias.id == Produtos.categoria_id)).all()
-    marcas = Marcas.query.join(
-        Produtos, (Marcas.id == Produtos.marca_id)).all()
+    pagina = request.args.get('pagina', 1, type=int)
+    get_cat = Categorias.query.filter_by(id=id).first_or_404()
+    categoria = Produtos.query.filter_by(categoria=get_cat).paginate(page=pagina, per_page=1)
+    categorias = Categorias.query.join(Produtos, (Categorias.id == Produtos.categoria_id)).all()
+    marcas = Marcas.query.join(Produtos, (Marcas.id == Produtos.marca_id)).all()
     return render_template('/products/index.html',
                            categoria=categoria,
                            categorias=categorias,
                            marcas=marcas,
+                           get_cat=get_cat,
                            title="Add title dps")
 
 

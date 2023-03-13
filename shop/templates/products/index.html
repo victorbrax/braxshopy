@@ -2,9 +2,11 @@
 
 {% block content %}
 <div class="container">
+
+  <!-- MARCAS -->
   <div class="row">
     {% if marca %}
-    {% for m in marca %}
+    {% for m in marca.items %}
     <div class="col-md-3">
       <div class="card">
         <img src="{{url_for('static', filename='images/' + m.img1)}}" class="card-img-top" height="150" alt="">
@@ -23,11 +25,45 @@
         </div>
       </div>
     </div>
-    {% endfor %}
+  </div>
+  {% endfor %}
 
+  <div class="row">
+    <div class="col text-center">
+
+      <!-- Página Anterior -->
+      {% if marca.has_prev %}
+      <a href="{{url_for('get_categoria', id=get_mar.id, pagina=marca.prev_num)}}"
+        class="btn btn-info btn-sm mt-4">←</a>
+      {% endif %}
+
+      <!-- Início do Loop de Páginas -->
+      {% for page_num in marca.iter_pages() %}
+
+      {% if page_num %}
+      {% if marca.pagina == page_num %}
+      <a href="{{url_for('get_categoria', id=get_mar.id, pagina=page_num)}}"
+        class="btn btn-info btn-sm mt-4">{{page_num}}</a>
+      {% else %}
+      <a href="{{url_for('get_categoria', id=get_mar.id, pagina=page_num)}}"
+        class="btn btn-outline-info btn-sm mt-4">{{page_num}}</a>
+      {% endif %}
+      {% else %}
+      ...
+      {% endif %}
+      {% endfor %}
+
+      <!-- Próxima Página -->
+      {% if marca.has_prev %}
+      <a href="{{url_for('home', id=get_mar.id, pagina=marca.next_num)}}" class="btn btn-info btn-sm mt-4">→</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div class="row">
     {% elif categoria %}
-
-    {% for c in categoria %}
+    {% for c in categoria.items %}
     <div class="col-md-3">
       <div class="card">
         <img src="{{url_for('static', filename='images/' + c.img1)}}" class="card-img-top" height="150" alt="">
@@ -47,9 +83,44 @@
       </div>
     </div>
     {% endfor %}
+  </div>
 
+  <div class="row">
+    <div class="col text-center">
+
+      <!-- Página Anterior -->
+      {% if categoria.has_prev %}
+      <a href="{{url_for('get_categoria', id=get_cat.id, pagina=categoria.prev_num)}}"
+        class="btn btn-info btn-sm mt-4">←</a>
+      {% endif %}
+
+      <!-- Início do Loop de Páginas -->
+      {% for page_num in categoria.iter_pages() %}
+
+      {% if page_num %}
+      {% if categoria.pagina == page_num %}
+      <a href="{{url_for('get_categoria', id=get_cat.id, pagina=page_num)}}"
+        class="btn btn-info btn-sm mt-4">{{page_num}}</a>
+      {% else %}
+      <a href="{{url_for('get_categoria', id=get_cat.id, pagina=page_num)}}"
+        class="btn btn-outline-info btn-sm mt-4">{{page_num}}</a>
+      {% endif %}
+      {% else %}
+      ...
+      {% endif %}
+      {% endfor %}
+
+      <!-- Próxima Página -->
+      {% if categoria.has_prev %}
+      <a href="{{url_for('home', id=get_cat.id, pagina=categoria.next_num)}}" class="btn btn-info btn-sm mt-4">→</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- PRODUTOS -->
+  <div class="row">
     {% else %}
-    {% for produto in produtos %}
+    {% for produto in produtos.items %}
     <div class="col-md-3">
       <div class="card">
         <img src="{{url_for('static', filename='images/' + produto.img1)}}" class="card-img-top" height="150" alt="">
@@ -69,7 +140,36 @@
       </div>
     </div>
     {% endfor %}
-    {% endif %}
   </div>
+  <div class="row">
+    <div class="col text-center">
+
+      <!-- Página Anterior -->
+      {% if produtos.has_prev %}
+      <a href="{{url_for('home', pagina=produtos.prev_num)}}" class="btn btn-info btn-sm mt-4">←</a>
+      {% endif %}
+
+      <!-- Início do Loop de Páginas -->
+      {% for page_num in produtos.iter_pages() %}
+
+      {% if page_num %}
+      {% if produtos.pagina == page_num %}
+      <a href="{{url_for('home', pagina=page_num)}}" class="btn btn-info btn-sm mt-4">{{page_num}}</a>
+      {% else %}
+      <a href="{{url_for('home', pagina=page_num)}}" class="btn btn-outline-info btn-sm mt-4">{{page_num}}</a>
+      {% endif %}
+      {% else %}
+      ...
+      {% endif %}
+      {% endfor %}
+
+      <!-- Próxima Página -->
+      {% if produtos.has_prev %}
+      <a href="{{url_for('home', pagina=produtos.next_num)}}" class="btn btn-info btn-sm mt-4">→</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
 </div>
 {% endblock content %}

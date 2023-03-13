@@ -29,9 +29,9 @@
         <!-- Botão de Deletar que faz referência a janela -->
         <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
             data-target="#exampleModal-{{produto.id}}">Deletar</button></td>
-      </tr>
+          </tr>
 
-      <!-- Janela de confirmação de exclusão  -->
+          <!-- Janela de confirmação de exclusão  -->
       <div class="modal fade" id="exampleModal-{{produto.id}}" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -55,8 +55,8 @@
         </div>
       </div>
 
-      </tr>
-      {% endfor %}
+    </tr>
+    {% endfor %}
     </tbody>
   </table>
 </div>
